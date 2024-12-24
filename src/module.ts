@@ -6,14 +6,24 @@ import { name, version } from '../package.json'
 import type { MetrikaModuleParams } from './runtime/type'
 
 interface RuntimeConfig {
-  yandexMetrika: Pick<MetrikaModuleParams, 'id'>
+  yandexMetrika: Pick<MetrikaModuleParams, 'ids'>
+}
+
+declare module 'nuxt/schema' {
+  interface RuntimeConfig {
+    apiSecret: Pick<MetrikaModuleParams, 'ids'>
+  }
+
+  interface PublicRuntimeConfig {
+    yandexMetrika: Pick<MetrikaModuleParams, 'ids'>
+  }
 }
 
 export interface ModuleOptions extends MetrikaModuleParams { }
 export interface ModulePublicRuntimeConfig extends RuntimeConfig { }
 
 // immediate return via export default brings the build errors
-const module: NuxtModule<Omit<MetrikaModuleParams, 'id'>> = defineNuxtModule<Omit<MetrikaModuleParams, 'id'>>({
+const module: NuxtModule<Omit<MetrikaModuleParams, 'ids'>> = defineNuxtModule<Omit<MetrikaModuleParams, 'ids'>>({
   meta: {
     name,
     version,
@@ -36,10 +46,19 @@ const module: NuxtModule<Omit<MetrikaModuleParams, 'id'>> = defineNuxtModule<Omi
     },
   },
   setup(options, nuxt) {
-    const moduleOptions: MetrikaModuleParams = defu(
-      nuxt.options.runtimeConfig.public.yandexMetrika,
-      options,
-    )
+    const moduleOptions: MetrikaModuleParams = {
+      ...options,
+      ids: nuxt.options.runtimeConfig.public.yandexMetrika?.ids.map(moduleOption => {
+        return {
+          ...moduleOption,
+          initParams: {
+            ...moduleOption.initParams,
+            ...options.initParams
+          }
+        }
+      }) ?? []
+    }
+
     nuxt.options.runtimeConfig.public.yandexMetrika = moduleOptions
 
     const resolver = createResolver(import.meta.url)
