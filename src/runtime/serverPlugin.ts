@@ -19,12 +19,12 @@ export default defineNuxtPlugin(() => {
   meta.noscript = meta.noscript || []
   
   moduleOptions.ids.forEach(moduleOption => {
-    meta.script.unshift({
+    meta.script!.unshift({
       id: 'metrika-init-' + moduleOption.id,
       innerHTML: getScriptTag(moduleOption),
     })
   
-    meta.noscript.unshift({
+    meta.noscript!.unshift({
       innerHTML: getNoscript(moduleOption.id),
     })
   })
@@ -33,7 +33,7 @@ export default defineNuxtPlugin(() => {
 })
 
 function isValid(options: Partial<MetrikaModuleParams>): options is MetrikaModuleParams {
-  return options.ids.length > 0 && !!options.ids[0].id
+  return !!options.ids && options.ids.length > 0 && !!options.ids[0].id
 }
 
 function getScriptTag(options: MetrikaModuleParams['ids'][0]) {
