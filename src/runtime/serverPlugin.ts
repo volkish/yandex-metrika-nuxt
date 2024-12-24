@@ -6,32 +6,37 @@ export default defineNuxtPlugin(() => {
   const moduleOptions = useRuntimeConfig().public.yandexMetrika
   if (!isValid(moduleOptions)) {
     // eslint-disable-next-line no-console
-    console.log('[yandex.metrika] module cannot be initialized, please specify ID')
+    console.log('[yandex.metrika] module cannot be initialized, please specify at least one ID')
     return
   }
 
   const meta: MetaObject = {}
+  
   // setting up script tag
   meta.script = meta.script || []
-  meta.script.unshift({
-    id: 'metrika-init',
-    innerHTML: getScriptTag(moduleOptions),
-  })
 
   // setting up no-script tag
   meta.noscript = meta.noscript || []
-  meta.noscript.unshift({
-    innerHTML: getNoscript(moduleOptions.id),
+  
+  moduleOptions.ids.forEach(moduleOption => {
+    meta.script.unshift({
+      id: 'metrika-init-' + moduleOption.id,
+      innerHTML: getScriptTag(moduleOption),
+    })
+  
+    meta.noscript.unshift({
+      innerHTML: getNoscript(moduleOption.id),
+    })
   })
 
   useHead(meta)
 })
 
 function isValid(options: Partial<MetrikaModuleParams>): options is MetrikaModuleParams {
-  return !!options.id
+  return options.ids.length > 0 && !!options.ids[0].id
 }
 
-function getScriptTag(options: MetrikaModuleParams) {
+function getScriptTag(options: MetrikaModuleParams['ids'][0]) {
   const metrikaContent = `
     ym("${options.id}", "init", ${JSON.stringify(options.initParams)});
   `

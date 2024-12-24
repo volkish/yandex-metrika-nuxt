@@ -1,8 +1,30 @@
 export interface MetrikaModuleParams {
   /**
-   * Yandex metrika ID
+   * List of Yandex metrika IDs
    */
-  id: string
+  ids: Array<{
+    /**
+     * Yandex metrika ID
+     */
+    id: string
+
+    /**
+     * This params send to the yandex metrika initializer https://yandex.ru/support/metrica/code/counter-initialize.html
+     */
+    initParams?: {
+      defer?: boolean
+      clickmap?: boolean
+      trackLinks?: boolean
+      accurateTrackBounce?: boolean
+      webvisor?: boolean
+      ecommerce?: boolean | string | Array<string | boolean>
+      trustedDomains?: string[]
+      childIframe?: boolean
+      type?: number
+      triggerEvent?: boolean
+    }
+  }>
+
   /**
    * Enable noscript tag or disable it
    * @default true
@@ -18,19 +40,4 @@ export interface MetrikaModuleParams {
    * @default true
    */
   verbose?: boolean
-  /**
-   * This params send to the yandex metrika initializer https://yandex.ru/support/metrica/code/counter-initialize.html
-   */
-  initParams?: {
-    defer?: boolean
-    clickmap?: boolean
-    trackLinks?: boolean
-    accurateTrackBounce?: boolean
-    webvisor?: boolean
-    ecommerce?: boolean | string | Array<string | boolean>
-    trustedDomains?: string[]
-    childIframe?: boolean
-    type?: number
-    triggerEvent?: boolean
-  }
 }
