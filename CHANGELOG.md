@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.5](https://github.com/volkish/yandex-metrika-nuxt/compare/v1.0.4...v1.0.5) (2024-12-24)
+
+
+### Bug Fixes
+
+* Added support for runtiveConfig from envs ([8c80626](https://github.com/volkish/yandex-metrika-nuxt/commit/8c80626616f95a31e0873d3725b23956a4b445b1))
+* change the consola package import ([7a43b95](https://github.com/volkish/yandex-metrika-nuxt/commit/7a43b95aec70d84da65b663c464fc73f1acb4c10))
+* Fix initialize for non ssr mode, remove plugin in dev mode ([c38d75e](https://github.com/volkish/yandex-metrika-nuxt/commit/c38d75e03ed45b26949fc6f396a677dd7577c6c3))
+* initial ([3aa2e02](https://github.com/volkish/yandex-metrika-nuxt/commit/3aa2e02c12d036ca1b38801cacfd249d96728fa5))
+* overload ts function, action types ([7699bab](https://github.com/volkish/yandex-metrika-nuxt/commit/7699bab9e904a9083e80882ee984fcc6489f46ee))
+* Remove unnecessary code from playground ([5352cb6](https://github.com/volkish/yandex-metrika-nuxt/commit/5352cb699c82b813c8eeed7419c3746ad09c9176))
+
 ## [1.0.4](https://github.com/artmizu/yandex-metrika-nuxt/compare/v1.0.3...v1.0.4) (2023-08-31)
 
 
