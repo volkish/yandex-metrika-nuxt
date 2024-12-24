@@ -5,7 +5,7 @@ import { ref } from '#imports'
 
 const user = ref<VisitorParams>({} as VisitorParams)
 const ctx = useNuxtApp()
-if (process.client)
+if (import.meta.client)
   ctx.$metrika.reachGoal('zzz')
 const sendUserParams = () => {
   ctx.$metrika.hit('user', { params: { currency: 'RUB' }, title: 'user' })

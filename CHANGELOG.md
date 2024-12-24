@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.7
+
+[compare changes](https://github.com/volkish/yandex-metrika-nuxt/compare/v1.0.6...v1.0.7)
+
 ## [1.0.5](https://github.com/volkish/yandex-metrika-nuxt/compare/v1.0.4...v1.0.5) (2024-12-24)
 
 

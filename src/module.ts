@@ -1,17 +1,12 @@
 import { resolve } from 'node:path'
-import { defu } from 'defu'
 import { addPlugin, createResolver, defineNuxtModule } from '@nuxt/kit'
 import type { NuxtModule, NuxtPlugin } from 'nuxt/schema'
 import { name, version } from '../package.json'
 import type { MetrikaModuleParams } from './runtime/type'
 
-interface RuntimeConfig {
-  yandexMetrika: Pick<MetrikaModuleParams, 'ids'>
-}
-
 declare module 'nuxt/schema' {
   interface RuntimeConfig {
-    apiSecret: Pick<MetrikaModuleParams, 'ids'>
+    yandexMetrika: Pick<MetrikaModuleParams, 'ids'>
   }
 
   interface PublicRuntimeConfig {
@@ -19,8 +14,12 @@ declare module 'nuxt/schema' {
   }
 }
 
-export interface ModuleOptions extends MetrikaModuleParams { }
-export interface ModulePublicRuntimeConfig extends RuntimeConfig { }
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface ModuleOptions extends MetrikaModuleParams {}
+
+export interface ModulePublicRuntimeConfig {
+  yandexMetrika: Pick<MetrikaModuleParams, 'ids'>
+}
 
 // immediate return via export default brings the build errors
 const module: NuxtModule<Omit<MetrikaModuleParams, 'ids'>> = defineNuxtModule<Omit<MetrikaModuleParams, 'ids'>>({
@@ -45,7 +44,7 @@ const module: NuxtModule<Omit<MetrikaModuleParams, 'ids'>> = defineNuxtModule<Om
       ecommerce: true,
     },
   },
-  setup(options, nuxt) {
+  setup (options, nuxt) {
     const moduleOptions: MetrikaModuleParams = {
       ...options,
       ids: nuxt.options.runtimeConfig.public.yandexMetrika?.ids.map(moduleOption => {
@@ -59,10 +58,10 @@ const module: NuxtModule<Omit<MetrikaModuleParams, 'ids'>> = defineNuxtModule<Om
       }) ?? []
     }
 
-    nuxt.options.runtimeConfig.public.yandexMetrika = moduleOptions
-
     const resolver = createResolver(import.meta.url)
+
     nuxt.options.build.transpile.push(resolver.resolve('./runtime'))
+    nuxt.options.runtimeConfig.public.yandexMetrika = moduleOptions
 
     if (!nuxt.options.dev && ['production', 'test'].includes(process.env.NODE_ENV!)) {
       // setting up script tag without initializing
@@ -75,14 +74,13 @@ const module: NuxtModule<Omit<MetrikaModuleParams, 'ids'>> = defineNuxtModule<Om
       const headPluginMode: NuxtPlugin['mode'] = nuxt.options.ssr ? 'server' : 'client'
       addPlugin({ src: resolve(__dirname, './runtime/serverPlugin'), mode: headPluginMode })
       addPlugin({ src: resolve(__dirname, './runtime/plugin'), mode: 'client' })
-    }
-    else if (options.verbose === true) {
+    } else if (options.verbose === true) {
       addPlugin({ src: resolve(__dirname, './runtime/plugin-dev'), mode: 'client' })
     }
   },
 })
 
-function getScriptTag(options: MetrikaModuleParams) {
+function getScriptTag (options: MetrikaModuleParams) {
   const libURL = !options.useCDN ? 'https://mc.yandex.ru/metrika/tag.js' : 'https://cdn.jsdelivr.net/npm/yandex-metrica-watch/tag.js'
   const metrikaContent = `
     (function(m,e,t,r,i,k,a){
@@ -93,4 +91,5 @@ function getScriptTag(options: MetrikaModuleParams) {
   `
   return metrikaContent.trim()
 }
+
 export default module

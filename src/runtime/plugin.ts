@@ -15,7 +15,7 @@ export default defineNuxtPlugin(() => {
         hit: (url: string, options?: SubParams) => {
           ids.forEach(id => window.ym(id, 'hit', url, options))
         },
-        reachGoal: (target: string, params?: ActionParams, callback?: () => void, ctx?: any) => {
+        reachGoal: (target: string, params?: ActionParams, callback?: () => void, ctx?: unknown) => {
           ids.forEach(id => window.ym(id, 'reachGoal', target, params, callback, ctx))
         },
         userParams: (params: VisitorParams) => {

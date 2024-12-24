@@ -9,23 +9,25 @@ describe('development mode tests', async () => {
     dev: true, // This part is tested
     nuxtConfig: {
       yandexMetrika: {
-        id: '49439650',
         noscript: true,
-        initParams: {
-          defer: false,
-          clickmap: false,
-          trackLinks: true,
-          accurateTrackBounce: false,
-          webvisor: false,
-          ecommerce: false,
-        },
+        ids: [{
+          id: '49439650',
+          initParams: {
+            defer: false,
+            clickmap: false,
+            trackLinks: true,
+            accurateTrackBounce: false,
+            webvisor: false,
+            ecommerce: false,
+          },
+        }]
       },
     },
   })
 
   it('script tag not injected in dev mode', async () => {
     // TODO
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+     
     const page = await $fetch('/')
     expect(page).not.toContain('ym("49439650", "init",')
   })

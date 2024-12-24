@@ -8,23 +8,25 @@ describe('module tests', async () => {
     browser: true,
     nuxtConfig: {
       yandexMetrika: {
-        id: '49439650',
         noscript: true,
-        initParams: {
-          defer: false,
-          clickmap: false,
-          trackLinks: true,
-          accurateTrackBounce: false,
-          webvisor: false,
-          ecommerce: false,
-        },
+        ids: [{
+          id: '49439650',
+          initParams: {
+            defer: false,
+            clickmap: false,
+            trackLinks: true,
+            accurateTrackBounce: false,
+            webvisor: false,
+            ecommerce: false,
+          },
+        }]
       },
     },
   })
 
   it('script tag is injected with propper arguments', async () => {
     // TODO
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+     
     const page = await $fetch('/')
     expect(page).toContain('ym("49439650", "init", {"defer":false,"clickmap":false,"trackLinks":true,"accurateTrackBounce":false,"webvisor":false,"ecommerce":false});')
   })

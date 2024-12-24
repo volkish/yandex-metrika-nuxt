@@ -9,16 +9,18 @@ describe('non-ssr mode tests', async () => {
     nuxtConfig: {
       ssr: false, // This part is tested
       yandexMetrika: {
-        id: '49439650',
         noscript: true,
-        initParams: {
-          defer: false,
-          clickmap: false,
-          trackLinks: true,
-          accurateTrackBounce: false,
-          webvisor: false,
-          ecommerce: false,
-        },
+        ids: [{
+          id: '49439650',
+          initParams: {
+            defer: false,
+            clickmap: false,
+            trackLinks: true,
+            accurateTrackBounce: false,
+            webvisor: false,
+            ecommerce: false,
+          },
+        }]
       },
     },
   })
