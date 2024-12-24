@@ -1,7 +1,7 @@
 {
   "name": "@volkish/yandex-metrika-nuxt",
   "type": "module",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "packageManager": "pnpm@7.15.0",
   "description": "Yandex Metrika integration for Nuxt 3",
   "license": "MIT",
@@ -11,8 +11,8 @@
   "exports": {
     ".": {
       "types": "./dist/types.d.ts",
-      "require": "./dist/module.cjs",
-      "import": "./dist/module.mjs"
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
     }
   },
   "main": "./dist/module.cjs",
@@ -21,31 +21,31 @@
     "dist"
   ],
   "scripts": {
-    "prepack": "nuxt-module-build",
+    "prepack": "nuxt-module-build build",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
-    "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
-    "dev:start": "nuxi start playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+    "release": "pnpm run lint && pnpm run test && pnpm run prepack && changelogen --release && pnpm publish && git push --follow-tags",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:type": "vitest typecheck",
     "test:watch": "vitest watch",
-    "typecheck": "pnpm tsc",
-    "prepare": "husky install"
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
   },
   "dependencies": {
     "@nuxt/kit": "^3.14.1592"
   },
   "devDependencies": {
+    "@nuxt/devtools": "^1.6.4",
     "@nuxt/eslint-config": "^0.7.4",
     "@nuxt/module-builder": "^0.8.4",
     "@nuxt/schema": "^3.14.1592",
     "@nuxt/test-utils": "^3.15.1",
-    "changelogen": "^0.5.1",
+    "@types/node": "latest",
+    "changelogen": "^0.5.7",
     "eslint": "^9.17.0",
-    "husky": "^8.0.3",
     "nuxt": "^3.14.1592",
-    "playwright": "^1.49.1",
-    "vitest": "^0.34.6"
+    "typescript": "~5.7.2",
+    "vitest": "^2.1.8",
+    "vue-tsc": "^2.2.0"
   }
 }
