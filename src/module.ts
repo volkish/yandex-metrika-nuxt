@@ -1,6 +1,4 @@
-import { resolve } from 'node:path'
-import { addPlugin, createResolver, defineNuxtModule } from '@nuxt/kit'
-import type { NuxtModule, NuxtPlugin } from 'nuxt/schema'
+import { addPlugin, addServerPlugin, createResolver, defineNuxtModule } from '@nuxt/kit'
 import { name, version } from '../package.json'
 import type { MetrikaModuleParams } from './runtime/type'
 
@@ -14,72 +12,6 @@ declare module 'nuxt/schema' {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ModuleOptions extends MetrikaModuleParams {}
-
-export interface ModulePublicRuntimeConfig {
-  yandexMetrika: Pick<MetrikaModuleParams, 'ids'>
-}
-
-// immediate return via export default brings the build errors
-const module: NuxtModule<Omit<MetrikaModuleParams, 'ids'>> = defineNuxtModule<Omit<MetrikaModuleParams, 'ids'>>({
-  meta: {
-    name,
-    version,
-    configKey: 'yandexMetrika',
-    compatibility: {
-      nuxt: '^3.0.0',
-    },
-  },
-  defaults: {
-    noscript: true,
-    useCDN: false,
-    verbose: true,
-    initParams: {
-      defer: true,
-      clickmap: true,
-      trackLinks: true,
-      accurateTrackBounce: true,
-      webvisor: true,
-      ecommerce: true,
-    },
-  },
-  setup (options, nuxt) {
-    const moduleOptions: MetrikaModuleParams = {
-      ...options,
-      ids: nuxt.options.runtimeConfig.public.yandexMetrika?.ids.map(moduleOption => {
-        return {
-          ...moduleOption,
-          initParams: {
-            ...moduleOption.initParams,
-            ...options.initParams
-          }
-        }
-      }) ?? []
-    }
-
-    const resolver = createResolver(import.meta.url)
-
-    nuxt.options.build.transpile.push(resolver.resolve('./runtime'))
-    nuxt.options.runtimeConfig.public.yandexMetrika = moduleOptions
-
-    if (!nuxt.options.dev && ['production', 'test'].includes(process.env.NODE_ENV!)) {
-      // setting up script tag without initializing
-      nuxt.options.app.head.script = nuxt.options.app.head.script || []
-      nuxt.options.app.head.script.unshift({
-        id: 'metrika',
-        innerHTML: getScriptTag(moduleOptions),
-      })
-
-      const headPluginMode: NuxtPlugin['mode'] = nuxt.options.ssr ? 'server' : 'client'
-      addPlugin({ src: resolve(__dirname, './runtime/serverPlugin'), mode: headPluginMode })
-      addPlugin({ src: resolve(__dirname, './runtime/plugin'), mode: 'client' })
-    } else if (options.verbose === true) {
-      addPlugin({ src: resolve(__dirname, './runtime/plugin-dev'), mode: 'client' })
-    }
-  },
-})
-
 function getScriptTag (options: MetrikaModuleParams) {
   const libURL = !options.useCDN ? 'https://mc.yandex.ru/metrika/tag.js' : 'https://cdn.jsdelivr.net/npm/yandex-metrica-watch/tag.js'
   const metrikaContent = `
@@ -92,4 +24,59 @@ function getScriptTag (options: MetrikaModuleParams) {
   return metrikaContent.trim()
 }
 
-export default module
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface ModuleOptions extends MetrikaModuleParams {}
+
+export default defineNuxtModule<MetrikaModuleParams>({
+  meta: {
+    name,
+    version,
+    configKey: 'yandexMetrika'
+  },
+  defaults: {
+    noscript: true,
+    useCDN: false,
+    verbose: true,
+    defaultInitParams: {
+      defer: true,
+      clickmap: true,
+      trackLinks: true,
+      accurateTrackBounce: true,
+      webvisor: true,
+      ecommerce: true,
+    },
+  },
+  setup (options, nuxt) {
+    const moduleOptions: MetrikaModuleParams = {
+      ...options,
+      ids: options?.ids?.map(moduleOption => {
+        return {
+          ...moduleOption,
+          initParams: {
+            ...moduleOption.initParams,
+            ...options.defaultInitParams
+          }
+        }
+      }) ?? []
+    }
+
+    const resolver = createResolver(import.meta.url)
+
+    nuxt.options.runtimeConfig.public.yandexMetrika = {
+      ids: moduleOptions.ids
+    }
+
+    if (!nuxt.options.dev && ['production', 'test'].includes(process.env.NODE_ENV!)) {
+      nuxt.options.app.head.script = nuxt.options.app.head.script || []
+      nuxt.options.app.head.script.unshift({
+        id: 'metrika',
+        innerHTML: getScriptTag(moduleOptions),
+      })
+
+      addServerPlugin(resolver.resolve('./runtime/serverPlugin'))
+      addPlugin(resolver.resolve('./runtime/plugin'))
+    } else if (options.verbose === true) {
+      addPlugin(resolver.resolve('./runtime/plugin-dev'))
+    }
+  },
+})

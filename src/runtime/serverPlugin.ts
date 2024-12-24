@@ -1,6 +1,6 @@
 import type { MetaObject } from '@nuxt/schema'
 import type { MetrikaModuleParams } from './type'
-import { defineNuxtPlugin, useHead, useRuntimeConfig } from '#app'
+import { defineNuxtPlugin, useRuntimeConfig, useHead } from '#app'
 
 export default defineNuxtPlugin(() => {
   const moduleOptions = useRuntimeConfig().public.yandexMetrika

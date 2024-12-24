@@ -1,12 +1,14 @@
 import { defineNuxtConfig } from 'nuxt/config'
-import MyModule from '../'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2024-12-24',
-  modules: [MyModule],
+  modules: ['../src/module'],
+  devtools: { enabled: true },
+
   yandexMetrika: {
     ids: [{
       id: '49439650',
     }]
-  }
+  },
+
+  compatibilityDate: '2024-12-24'
 })

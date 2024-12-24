@@ -4,9 +4,11 @@ import { defineNuxtPlugin, useRouter } from '#app'
 export default defineNuxtPlugin(() => {
   const router = useRouter()
 
-  router.afterEach((to) => {
-    console.info(`[yandex.metrika] hit on "${to.fullPath}" on dev`)
-  })
+  if (import.meta.client) {
+    router.afterEach((to) => {
+      console.info(`[yandex.metrika] hit on "${to.fullPath}" on dev`)
+    })
+  }
 
   return {
     provide: {

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VisitorParams } from '../../src/runtime/global'
-import { useNuxtApp } from '#app'
-import { ref } from '#imports'
+import { useNuxtApp } from 'nuxt/app'
+import { ref } from 'vue'
 
 const user = ref<VisitorParams>({} as VisitorParams)
 const ctx = useNuxtApp()
